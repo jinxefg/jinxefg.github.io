@@ -1,0 +1,98 @@
+---
+---
+
+@import "jekyll-theme-hacker";
+
+/* Custom color overrides: dusty rose + dark contrast + rose-gold accents */
+:root {
+  --dusty-rose-bg: #f4e7e8;    /* soft dusty rose background */
+  --dark-contrast: #2b1b1f;    /* deep warm near-black for text and surfaces */
+  --rose-gold:    #b76e79;    /* rose-gold accent */
+  --rose-gold-light: #f6d9d6;  /* light accent / highlights */
+  --muted-border: #e6d6d6;
+}
+
+body {
+  background-color: var(--dusty-rose-bg);
+  color: var(--dark-contrast);
+}
+
+a, a:visited {
+  color: var(--rose-gold);
+}
+
+a:hover, a:focus {
+  color: var(--rose-gold-light);
+  text-decoration: underline;
+}
+
+/* Header / nav */
+.site-header, header, .topnav {
+  background: var(--dark-contrast);
+  color: var(--dusty-rose-bg);
+}
+
+.site-title, .site-description, h1, h2, h3, h4 {
+  color: var(--dark-contrast);
+}
+
+/* Navigation links that sit on the dark header */
+.site-header a, header a, .topnav a {
+  color: var(--dusty-rose-bg);
+}
+
+.site-header a:hover, header a:hover, .topnav a:hover {
+  color: var(--rose-gold);
+}
+
+/* Separators and borders */
+hr, .separator {
+  border-color: var(--muted-border);
+}
+
+/* Blockquotes */
+blockquote {
+  background: linear-gradient(90deg, rgba(183,110,121,0.06), rgba(246,217,214,0.03));
+  border-left: 4px solid var(--rose-gold);
+  color: var(--dark-contrast);
+  padding: 0.6rem 1rem;
+  margin-left: 0;
+}
+
+/* Code blocks and inline code */
+pre, code {
+  background: var(--dark-contrast);
+  color: var(--dusty-rose-bg);
+  border-radius: 4px;
+}
+
+pre {
+  padding: 1rem;
+  overflow: auto;
+}
+
+/* Buttons / call-to-action */
+.button, .btn, input[type="submit"] {
+  background: linear-gradient(180deg, var(--rose-gold), #9b5970);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 0.9rem;
+  border-radius: 6px;
+}
+
+/* Footer */
+.site-footer, footer {
+  background: var(--dark-contrast);
+  color: var(--dusty-rose-bg);
+  padding: 1rem 0.5rem;
+}
+
+/* Misc: links inside cards or post meta */
+.article .post-meta a, .post .post-meta a {
+  color: var(--rose-gold);
+}
+
+/* Accessibility: ensure sufficient contrast for body text on light bg */
+@media (prefers-contrast: high) {
+  body { color: #231617; }
+}
