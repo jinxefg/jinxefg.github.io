@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 jobs:
   build-and-deploy:
@@ -18,12 +19,26 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
+      - name: Diagnostic — show repo and check API
+        env:
+          REPO: ${{ github.repository }}
+        run: |
+          echo "github.repository = $REPO"
+          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/$REPO)
+          echo "GET /repos/$REPO -> HTTP $status"
+          if [ "$status" -ne 200 ]; then
+            echo "Repository GET returned $status. Check workflow permissions, token, and repository name."
+            exit 1
+          fi
+
       - name: Checkout read-later repository
         uses: actions/checkout@v4
         with:
           repository: jinxefg/read-later
           path: read-later-src
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # If `read-later` is a private repo, create a personal access token (repo scope)
+          # and save it as a repository secret (e.g. REPO_ACCESS_TOKEN), then uncomment the token line below.
+          # token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
