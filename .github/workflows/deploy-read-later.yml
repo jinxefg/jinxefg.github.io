@@ -1,4 +1,4 @@
-name: Deploy Read-later-App to Pages
+name: Deploy read-later to Pages
 
 on:
   workflow_dispatch:
@@ -12,33 +12,34 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout Pages repo (this repo)
+      - name: Checkout Pages repo
         uses: actions/checkout@v4
         with:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Diagnostic — check access for workflow repo and Read-later-App repo
+      - name: Diagnostic — verify repo access
         env:
           REPO: ${{ github.repository }}
-          PAGES_REPO_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
           RL_REPO: jinxefg/Read-later-App
+          TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
         run: |
-          echo "github.repository = $REPO"
-          # Check API access to the workflow repo using GITHUB_TOKEN
-          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/$REPO)
+          echo "Checking access to workflow repo:"
+          status=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/$REPO)
           echo "GET /repos/$REPO -> HTTP $status"
-          if [ "$status" -ne 200 ]; then
-            echo "Workflow repo GET returned $status. Check workflow permissions or GITHUB_TOKEN."
-            exit 1
-          fi
 
-          # Check API access to the Read-later-App repo using the PAT stored in REPO_ACCESS_TOKEN
-          status2=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" https://api.github.com/repos/$RL_REPO)
+          echo "Checking access to Read-later-App:"
+          status2=$(curl -s -o /dev/null -w "%{http_code}" \
+            -H "Authorization: Bearer $TOKEN" \
+            https://api.github.com/repos/$RL_REPO)
           echo "GET /repos/$RL_REPO -> HTTP $status2"
+
           if [ "$status2" -ne 200 ]; then
-            echo "Read-later-App repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
+            echo "ERROR: Cannot access $RL_REPO — check REPO_ACCESS_TOKEN scopes."
             exit 1
           fi
 
@@ -59,21 +60,21 @@ jobs:
           cd read-later-src
           npm ci
 
-      - name: Build (Vite) with correct base path
+      - name: Build Vite app with correct base path
         run: |
           cd read-later-src
-          npm run build -- --base=/read-later-app/
+          npm run build -- --base=/read-later/
 
-      - name: Copy build output to site folder
+      - name: Copy build output to Pages site
         run: |
-          rm -rf Read-later-App || true
-          mkdir -p Read-later-App
-          cp -a read-later-src/dist/. Read-later-App/
+          rm -rf read-later || true
+          mkdir -p read-later
+          cp -a read-later-src/dist/. read-later/
 
-      - name: Commit and push built files to Pages repo
+      - name: Commit and push built files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add Read-later-App
+          git add read-later
           git commit -m "Deploy Read-later-App build" || echo "No changes to commit"
           git push
