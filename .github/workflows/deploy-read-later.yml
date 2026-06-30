@@ -27,16 +27,31 @@ jobs:
           path: read-later-src
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
-      - name: Copy static app to Pages site
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        run: |
+          cd read-later-src/readlater
+          npm install
+
+      - name: Build Vite app
+        run: |
+          cd read-later-src/readlater
+          npm run build -- --base=/read-later/
+
+      - name: Copy build output to Pages site
         run: |
           rm -rf read-later || true
           mkdir -p read-later
-          cp -a read-later-src/readlater/. read-later/
+          cp -a read-later-src/readlater/dist/. read-later/
 
       - name: Commit and push built files
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add read-later
-          git commit -m "Deploy static Read-later-App" || echo "No changes to commit"
+          git commit -m "Deploy Read-later-App build" || echo "No changes to commit"
           git push
