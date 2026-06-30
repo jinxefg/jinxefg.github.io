@@ -19,15 +19,25 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Diagnostic — show repo and check API
+      - name: Diagnostic — check access for workflow repo and read-later repo
         env:
           REPO: ${{ github.repository }}
+          RL_REPO: jinxefg/read-later
         run: |
           echo "github.repository = $REPO"
-          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer token: ${{ secrets.REPO_ACCESS_TOKEN }}" https://api.github.com/repos/$REPO)
+          # Check API access to the workflow repo using GITHUB_TOKEN
+          status=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/$REPO)
           echo "GET /repos/$REPO -> HTTP $status"
           if [ "$status" -ne 200 ]; then
-            echo "Repository GET returned $status. Check workflow permissions, token, and repository name."
+            echo "Workflow repo GET returned $status. Check workflow permissions or GITHUB_TOKEN."
+            exit 1
+          fi
+
+          # Check API access to the read-later repo using the PAT stored in REPO_ACCESS_TOKEN
+          status2=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" https://api.github.com/repos/$RL_REPO)
+          echo "GET /repos/$RL_REPO -> HTTP $status2"
+          if [ "$status2" -ne 200 ]; then
+            echo "Read-later repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
             exit 1
           fi
 
@@ -36,9 +46,7 @@ jobs:
         with:
           repository: jinxefg/read-later
           path: read-later-src
-          # If `read-later` is a private repo, create a personal access token (repo scope)
-          # and save it as a repository secret (e.g. REPO_ACCESS_TOKEN), then uncomment the token line below.
-          # token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
