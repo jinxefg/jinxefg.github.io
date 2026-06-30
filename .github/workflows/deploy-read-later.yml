@@ -1,4 +1,4 @@
-name: Deploy read-later-app to Pages
+name: Deploy Read-later-App to Pages
 
 on:
   workflow_dispatch:
@@ -19,11 +19,11 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Diagnostic — check access for workflow repo and read-later-app repo
+      - name: Diagnostic — check access for workflow repo and Read-later-App repo
         env:
           REPO: ${{ github.repository }}
           PAGES_REPO_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
-          RL_REPO: jinxefg/read-later-app
+          RL_REPO: jinxefg/Read-later-App
         run: |
           echo "github.repository = $REPO"
           # Check API access to the workflow repo using GITHUB_TOKEN
@@ -34,18 +34,18 @@ jobs:
             exit 1
           fi
 
-          # Check API access to the read-later-app repo using the PAT stored in REPO_ACCESS_TOKEN
+          # Check API access to the Read-later-App repo using the PAT stored in REPO_ACCESS_TOKEN
           status2=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" https://api.github.com/repos/$RL_REPO)
           echo "GET /repos/$RL_REPO -> HTTP $status2"
           if [ "$status2" -ne 200 ]; then
-            echo "Read-later-app repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
+            echo "Read-later-App repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
             exit 1
           fi
 
-      - name: Checkout read-later-app repository
+      - name: Checkout Read-later-App repository
         uses: actions/checkout@v4
         with:
-          repository: jinxefg/read-later-app
+          repository: jinxefg/Read-later-App
           path: read-later-src
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
@@ -66,14 +66,14 @@ jobs:
 
       - name: Copy build output to site folder
         run: |
-          rm -rf read-later-app || true
-          mkdir -p read-later-app
-          cp -a read-later-src/dist/. read-later-app/
+          rm -rf Read-later-App || true
+          mkdir -p Read-later-App
+          cp -a read-later-src/dist/. Read-later-App/
 
       - name: Commit and push built files to Pages repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add read-later
-          git commit -m "Deploy read-later-app build" || echo "No changes to commit"
+          git add Read-later-App
+          git commit -m "Deploy Read-later-App build" || echo "No changes to commit"
           git push
