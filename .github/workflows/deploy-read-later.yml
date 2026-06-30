@@ -1,0 +1,59 @@
+name: Deploy read-later to Pages
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [read-later-deploy]
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Pages repo (this repo)
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+          fetch-depth: 0
+
+      - name: Checkout read-later repository
+        uses: actions/checkout@v4
+        with:
+          repository: jinxefg/read-later
+          path: read-later-src
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd read-later-src
+          npm ci
+
+      - name: Build (Vite) with correct base path
+        run: |
+          cd read-later-src
+          npm run build -- --base /read-later/
+
+      - name: Copy build output to site folder
+        run: |
+          rm -rf read-later || true
+          mkdir -p read-later
+          cp -a read-later-src/dist/. read-later/
+
+      - name: Commit and push built files to Pages repo
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add read-later
+          if ! git diff --staged --quiet; then
+            git commit -m "Deploy read-later to /read-later [skip ci]"
+            git push origin HEAD:main
+          else
+            echo "No changes to deploy"
+          fi
