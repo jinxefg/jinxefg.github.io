@@ -21,7 +21,7 @@ jobs:
 
       - name: Diagnostic — check access for workflow repo and read-later repo
         env:
-          REPO: ${{ github.repository }}
+          PAGES_REPO_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
           RL_REPO: jinxefg/read-later
         run: |
           echo "github.repository = $REPO"
