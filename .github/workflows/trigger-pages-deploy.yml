@@ -1,0 +1,23 @@
+name: Trigger Pages deploy for read-later
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger repository_dispatch on Pages repo
+        env:
+          PAGES_REPO_PAT: ${{ secrets.PAGES_REPO_PAT }}
+        run: |
+          if [ -z "$PAGES_REPO_PAT" ]; then
+            echo "ERROR: PAGES_REPO_PAT secret is not set. Create a PAT with repo scope and add it to repository secrets."
+            exit 1
+          fi
+          curl -s -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token $PAGES_REPO_PAT" \
+            https://api.github.com/repos/jinxefg/jinxefg.github.io/dispatches \
+            -d '{"event_type":"read-later-deploy","client_payload":{"ref":"main"}}'
