@@ -1,0 +1,12 @@
+title: Jinxefg
+email: ""
+description: "Personal site powered by Jekyll"
+url: "https://jinxefg.github.io"
+baseurl: "" # leave empty for user/organization sites
+theme: jekyll-theme-hacker
+plugins:
+  - jekyll-feed
+
+# Optional settings
+markdown: kramdown
+#paginate: 5
