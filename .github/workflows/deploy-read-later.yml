@@ -58,7 +58,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd read-later-src
-          npm ci
+          npm install
 
       - name: Build Vite app with correct base path
         run: |
