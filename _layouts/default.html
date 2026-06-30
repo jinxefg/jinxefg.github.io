@@ -1,41 +1,33 @@
+---
+---
+
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.title }} - {{ site.title }}</title>
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
-
-    {% unless site.title == empty %}
-    <title>{{ site.title }}</title>
-    {% endunless %}
-  </head>
-
-  <body>
+</head>
+<body>
     <div class="container">
-      <header>
-        <h1><a href="{{ "/" | relative_url }}">{{ site.title | default: site.github.repository_name }}</a></h1>
-        <p>{{ site.description | default: site.github.project_tagline }}</p>
-      </header>
-      <hr>
-      <nav>
-        <ul>
-          <li><a href="{{ "/" | relative_url }}">Home</a></li>
-          <li><a href="/read-later/">Read Later App</a></li>
-        </ul>
-      </nav>
-      <hr>
+        <div class="header-container">
+            <h1 class="site-title">{{ site.title }}</h1>
+            <p class="site-description">{{ site.description }}</p>
+        </div>
 
-      <section>
-        {{ content }}
-      </section>
+        <nav class="main-nav">
+            <a href="/">Home</a>
+            <a href="/read-later/">Read Later App</a>
+        </nav>
 
-      <footer>
-        {% if site.github.is_project_page %}
-        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
-        {% endif %}
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/pages-themes/hacker">pages-themes/hacker</a></small></p>
-      </footer>
+        <main class="main-content">
+            {{ content }}
+        </main>
+
+        <footer class="site-footer">
+            <p><small>Hosted on GitHub Pages</small></p>
+        </footer>
     </div>
-  </body>
+</body>
 </html>
