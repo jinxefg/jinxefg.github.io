@@ -5,4 +5,4 @@ title: Home
 
 # Welcome
 
-Check out my [Read Later Application](https://read-later-app-delta.vercel.app)
+Check out my [Read Later Application](/read-later/)
