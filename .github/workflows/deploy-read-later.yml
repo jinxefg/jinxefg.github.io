@@ -1,4 +1,4 @@
-name: Deploy read-later to Pages
+name: Deploy read-later-app to Pages
 
 on:
   workflow_dispatch:
@@ -19,11 +19,11 @@ jobs:
           persist-credentials: true
           fetch-depth: 0
 
-      - name: Diagnostic — check access for workflow repo and read-later repo
+      - name: Diagnostic — check access for workflow repo and read-later-app repo
         env:
           REPO: ${{ github.repository }}
           PAGES_REPO_PAT: ${{ secrets.REPO_ACCESS_TOKEN }}
-          RL_REPO: jinxefg/read-later
+          RL_REPO: jinxefg/read-later-app
         run: |
           echo "github.repository = $REPO"
           # Check API access to the workflow repo using GITHUB_TOKEN
@@ -34,25 +34,25 @@ jobs:
             exit 1
           fi
 
-          # Check API access to the read-later repo using the PAT stored in REPO_ACCESS_TOKEN
+          # Check API access to the read-later-app repo using the PAT stored in REPO_ACCESS_TOKEN
           status2=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${{ secrets.REPO_ACCESS_TOKEN }}" https://api.github.com/repos/$RL_REPO)
           echo "GET /repos/$RL_REPO -> HTTP $status2"
           if [ "$status2" -ne 200 ]; then
-            echo "Read-later repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
+            echo "Read-later-app repo GET returned $status2. Ensure REPO_ACCESS_TOKEN exists, is valid, and has access to $RL_REPO."
             exit 1
           fi
 
-      - name: Checkout read-later repository
+      - name: Checkout read-later-app repository
         uses: actions/checkout@v4
         with:
-          repository: jinxefg/read-later
+          repository: jinxefg/read-later-app
           path: read-later-src
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '24'
+          node-version: '22'
 
       - name: Install dependencies
         run: |
@@ -62,22 +62,18 @@ jobs:
       - name: Build (Vite) with correct base path
         run: |
           cd read-later-src
-          npm run build -- --base /read-later/
+          npm run build -- --base=/read-later-app/
 
       - name: Copy build output to site folder
         run: |
-          rm -rf read-later || true
-          mkdir -p read-later
-          cp -a read-later-src/dist/. read-later/
+          rm -rf read-later-app || true
+          mkdir -p read-later-app
+          cp -a read-later-src/dist/. read-later-app/
 
       - name: Commit and push built files to Pages repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add read-later
-          if ! git diff --staged --quiet; then
-            git commit -m "Deploy read-later to /read-later [skip ci]"
-            git push origin HEAD:main
-          else
-            echo "No changes to deploy"
-          fi
+          git commit -m "Deploy read-later-app build" || echo "No changes to commit"
+          git push
