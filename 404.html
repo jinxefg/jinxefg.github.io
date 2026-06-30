@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="robots" content="noindex" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Not found</title>
+</head>
+<body>
+  <h1>Not found</h1>
+  <p>The page you're looking for was not found. If this was a deep link into the read-later app, the app will attempt to handle it automatically.</p>
+
+  <script>
+    (function () {
+      // If the path is for the read-later app, load its index.html so the SPA router can handle the route.
+      var path = location.pathname || '/';
+      if (path.startsWith('/read-later')) {
+        fetch('/read-later/index.html').then(function (r) {
+          return r.text();
+        }).then(function (html) {
+          // Keep the original path in the address bar:
+          history.replaceState(null, '', location.pathname + location.search + location.hash);
+          document.open();
+          document.write(html);
+          document.close();
+        }).catch(function () {
+          // fallback: show a link to the app root
+          var a = document.createElement('a');
+          a.href = '/read-later/';
+          a.textContent = 'Open read-later home';
+          document.body.appendChild(a);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
