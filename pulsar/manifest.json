@@ -1,0 +1,35 @@
+{
+  "name": "Pulsar",
+  "short_name": "Pulsar",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#14161F",
+  "theme_color": "#14161F",
+  "description": "Letters to future you \u2014 sealed until they arrive.",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "icons/Icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/Icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/Icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
