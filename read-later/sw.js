@@ -16,7 +16,7 @@
 //
 // /api is never touched: extraction only makes sense online.
 
-const MANIFEST = {"version":"c5edb009","urls":["/","/assets/index-CeCecrdO.js","/icons/apple-touch-icon.png","/icons/icon-192.png","/icons/icon-512.png","/icons/icon-maskable-512.png","/manifest.webmanifest"]} || { version: "dev", urls: ["/"] };
+const MANIFEST = {"version":"1a44a040","urls":["/","/assets/index-DGQ7BHYH.js","/icons/apple-touch-icon.png","/icons/icon-192.png","/icons/icon-512.png","/icons/icon-maskable-512.png","/manifest.webmanifest"]} || { version: "dev", urls: ["/"] };
 const SHELL = `later-shell-${MANIFEST.version}`;
 const IMAGES = "later-img-v1";
 const IMAGE_CAP = 400;
