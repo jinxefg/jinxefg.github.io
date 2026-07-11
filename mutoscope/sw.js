@@ -1,6 +1,6 @@
 // Offline shell — cache-first for the app's own files, network for everything
 // else (embeds and thumbnails are third-party and never cached here).
-const CACHE = "mutoscope-v1";
+const CACHE = "mutoscope-v3";
 const SHELL = ["./", "./index.html", "./manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
